@@ -1,0 +1,262 @@
+!pip install pyodbc
+!pip install pandas
+
+import pandas as pd
+import pyodbc
+
+# Criando um dicionário de dados
+dados = {
+    'Nome': ['João', 'Maria', 'Pedro', 'Ana'],
+    'Idade': [32, 45, 29, 40],
+    'Cidade': ['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Brasília']
+}
+ 
+
+# Criando um DataFrame a partir do dicionário
+df = pd.DataFrame(dados)
+ 
+# Exibindo o DataFrame
+print(df)
+
+# Lendo um arquivo CSV
+df = pd.read_csv("/lakehouse/default/" + "Files/dia04_pandas/TABELA_VENDAS.csv")
+ 
+ 
+# Exibindo o DataFrame
+print(df)
+ 
+# Escrevendo o DataFrame em um arquivo CSV
+df.to_csv(r"/lakehouse/default/" + "Files/dia04_pandas/TABELA_VENDAS2.csv", index=False)
+
+# Criando um dicionário de dados
+dados = {
+    'Nome': ['João', 'Maria', 'Pedro', 'Ana', 'João', 'Maria', 'Pedro'],
+    'Idade': [32, 45, 29, 40, 36, 43, 27],
+    'Cidade': ['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Brasília', 'São Paulo', 'Rio de Janeiro', 'Belo Horizonte']
+}
+ 
+# Criando um DataFrame a partir do dicionário
+df = pd.DataFrame(dados)
+ 
+# Agrupando dados com base na coluna "Cidade"
+grouped = df.groupby(by='Cidade')
+ 
+# Aplicando uma função de agregação ao grupo
+result = grouped.agg({'Idade': 'mean'})
+ 
+# Exibindo o resultado
+print(result)
+
+# Criar um DataFrame de exemplo
+df = pd.DataFrame({
+    'coluna_1': [1, 2, 3, 4, 5],
+    'coluna_2': [2, 3, 4, 5, 6]
+})
+ 
+# Calcular a média de cada coluna
+media_coluna_1 = df['coluna_1'].mean()
+media_coluna_2 = df['coluna_2'].mean()
+ 
+print("Média da coluna 1:", media_coluna_1)
+print("Média da coluna 2:", media_coluna_2)
+ 
+# Calcular a mediana de cada coluna
+mediana_coluna_1 = df['coluna_1'].median()
+mediana_coluna_2 = df['coluna_2'].median()
+ 
+print("Mediana da coluna 1:", mediana_coluna_1)
+print("Mediana da coluna 2:", mediana_coluna_2)
+ 
+# Calcular o desvio padrão de cada coluna
+desvio_padrao_coluna_1 = df['coluna_1'].std()
+desvio_padrao_coluna_2 = df['coluna_2'].std()
+ 
+print("Desvio padrão da coluna 1:", desvio_padrao_coluna_1)
+print("Desvio padrão da coluna 2:", desvio_padrao_coluna_2)
+
+# Criar um DataFrame de exemplo com valores ausentes, duplicados e inconsistentes
+df = pd.DataFrame({
+    'coluna_1': [1, 2, 3, 4, float('nan'), 6, 7, float('nan'), float('nan')],
+    'coluna_2': [2, 3, 3, 5, 6, 6, 6, 7, 8]
+})
+ 
+# Remover valores ausentes (NaN)
+df = df.dropna()
+ 
+# Remover duplicados
+df = df.drop_duplicates()
+ 
+# Remover valores inconsistentes (por exemplo, valores fora de um intervalo específico)
+df = df[df['coluna_1'] > 2]
+ 
+print(df)
+
+# Criar um DataFrame de exemplo
+df = pd.DataFrame({
+    'coluna_1': [1, 2, 3, 4, 5],
+    'coluna_2': [2, 3, 4, 5, 6]
+})
+ 
+# Aplicar uma função a cada elemento de uma coluna
+df['coluna_1_transformada'] = df['coluna_1'].apply(lambda x: x**2)
+ 
+# Aplicar uma função a cada linha do DataFrame
+df['coluna_3'] = df.apply(lambda x: x['coluna_1'] + x['coluna_2'], axis=1)
+ 
+print(df)
+
+# Criar um DataFrame de exemplo
+df = pd.DataFrame({
+    'coluna_1': [1, 2, 3, 4, 5],
+    'coluna_2': [2, 3, 4, 5, 6]
+})
+ 
+# Aplicar uma função a cada elemento de uma coluna
+df['coluna_1_transformada'] = df['coluna_1'].apply(lambda x: x**2)
+ 
+# Aplicar uma função a cada linha do DataFrame
+df['coluna_3'] = df.apply(lambda x: x['coluna_1'] + x['coluna_2'], axis=1)
+ 
+print(df)
+
+# Lê o arquivo .csv
+df_original = pd.read_csv("/lakehouse/default/" + "Files/dia04_pandas/TABELA_VENDAS.csv")
+ 
+# Exibir o DataFrame resultante
+print(df_original)
+
+# Supondo que df_original_Categoria seja um DataFrame válido
+df_original_Categoria = df_original.drop_duplicates(subset="Categoria")
+ 
+# Criar o novo dataframe com ID auto-incrementável
+df_d_categoria = pd.DataFrame(columns=["sk_Categoria", "NOME_CATEGORIA"])
+ 
+for index, row in df_original_Categoria.iterrows():
+    new_row = pd.DataFrame({
+        "sk_Categoria": [df_d_categoria.index.max() + 1 if len(df_d_categoria) > 0 else 0],
+        "NOME_CATEGORIA": [row["Categoria"]]
+    })
+    df_d_categoria = pd.concat([df_d_categoria, new_row], ignore_index=True)
+ 
+# Exibir o novo dataframe
+print(df_d_categoria)
+
+# Criar dois DataFrames de exemplo
+df1 = pd.DataFrame({
+    'coluna_1': [1, 2, 3],
+    'coluna_2': [2, 3, 4]
+
+# Lê o arquivo .csv
+df_original = pd.read_csv(r"/lakehouse/default/" + "Files/dia04_pandas/TABELA_VENDAS.csv", encoding="utf-8",sep=";")
+ 
+# Exibir o DataFrame resultante
+print(df_original.head(2))
+
+ 
+# Lê o arquivo .csv
+df_original = pd.read_csv(r"/lakehouse/default/" + "Files/dia04_pandas/TABELA_VENDAS.csv", encoding="utf-8",sep=";")
+ 
+# Exibir o DataFrame resultante
+print(df_original.head(2))
+
+
+# Supondo que df_original_Categoria seja um DataFrame válido
+df_original_Categoria = df_original.drop_duplicates(subset="Categoria")
+ 
+# Criar o novo dataframe com ID auto-incrementável
+df_d_categoria = pd.DataFrame(columns=["sk_Categoria", "NOME_CATEGORIA"])
+ 
+for index, row in df_original_Categoria.iterrows():
+    new_row = pd.DataFrame({
+        "sk_Categoria": [df_d_categoria.index.max() + 1 if len(df_d_categoria) > 0 else 0],
+        "NOME_CATEGORIA": [row["Categoria"]]
+    })
+    df_d_categoria = pd.concat([df_d_categoria, new_row], ignore_index=True)
+ 
+# Exibir o novo dataframe
+print(df_d_categoria)
+ 
+
+df_original_temp = df_original[["Cidade"]].drop_duplicates(subset="Cidade")
+ 
+# criar o novo dataframe com ID auto-incrementável
+df_d_cidade = pd.DataFrame(columns=["id_Cidade", "NOME_CIDADE"])
+current_id = 1
+for index, row in df_original_temp.iterrows():
+    temp_df = pd.DataFrame({
+        "id_Cidade": [current_id],
+        "NOME_CIDADE": [row["Cidade"]]
+    })
+    df_d_cidade = pd.concat([df_d_cidade, temp_df])
+    current_id += 1
+ 
+ 
+# exibir o novo dataframe
+print(df_d_cidade)
+
+
+df_original_temp = df_original[["Cor"]].drop_duplicates(subset="Cor")
+# criar o novo dataframe com ID auto-incrementável
+df_d_cores = pd.DataFrame(columns=["sk_Cor", "NomeCor"])
+current_id = 1
+for index, row in df_original_temp.iterrows():
+    temp_df = pd.DataFrame({
+        "sk_Cor": [current_id],
+        "NomeCor": [row["Cor"]]
+    })
+    df_d_cores = pd.concat([df_d_cores, temp_df])
+    current_id += 1
+ 
+ 
+# exibir o novo dataframe
+print(df_d_cores)
+
+
+df_original_temp = df_original[["Modelo"]].drop_duplicates(subset="Modelo")
+ 
+# criar o novo dataframe com ID auto-incrementável
+df_d_modelo = pd.DataFrame(columns=["sk_Modelo", "Modelo"])
+current_id = 1
+for index, row in df_original_temp.iterrows():
+    temp_df = pd.DataFrame({
+        "sk_Modelo": [current_id],
+        "Modelo": [row["Modelo"]]
+    })
+    df_d_modelo = pd.concat([df_d_modelo, temp_df])
+    current_id += 1
+ 
+ 
+# exibir o novo dataframe
+print(df_d_modelo)
+ 
+df_original_temp = df_original[["Pais"]].drop_duplicates(subset="Pais")
+ 
+# criar o novo dataframe com ID auto-incrementável
+df_d_pais = pd.DataFrame(columns=["sk_Pais", "Pais"])
+current_id = 1
+for index, row in df_original_temp.iterrows():
+    temp_df = pd.DataFrame({
+        "sk_Pais": [current_id],
+        "Pais": [row["Pais"]]
+    })
+    df_d_pais = pd.concat([df_d_pais, temp_df])
+    current_id += 1
+ 
+# exibir o novo dataframe
+print(df_d_pais)
+
+df_original_temp = df_original[["Região"]].drop_duplicates(subset="Região")
+ 
+# criar o novo dataframe com ID auto-incrementável
+df_d_regiao = pd.DataFrame(columns=["sk_Regiao", "Regiao"])
+current_id = 1
+for index, row in df_original_temp.iterrows():
+    temp_df = pd.DataFrame({
+        "sk_Regiao": [current_id],
+        "Regiao": [row["Região"]]
+    })
+    df_d_regiao = pd.concat([df_d_regiao, temp_df])
+    current_id += 1
+ 
+# exibir o novo dataframe
+print(df_d_regiao)
